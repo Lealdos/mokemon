@@ -1,0 +1,210 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Acme&family=Comfortaa:wght@300;400;500;600;700&display=swap');
+body,html{
+    margin: 0px;
+    padding: 0px;
+    height: 100vh;
+}
+
+body{
+    font-family: 'Acme', sans-serif;
+    background-color: #EB5353;
+    background-image:url('https://cutewallpaper.org/21/pixel-forest-background/ArtStation-Forest-Battle-Background-Nauris-Amatnieks.jpg');
+    background-repeat: no-repeat;
+    background-size:cover;
+    margin: 0;
+    height: 100vh; 
+    background-repeat:repeat-y;
+}
+
+#select_champ form {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.tittle {
+    display:flex ;
+    color: whitesmoke;
+    font-size: 40px;
+    text-align:center;
+}
+
+.subtittle{
+    color: whitesmoke;
+    font-size: 32px;
+}
+
+* {
+    
+    padding: 5px;
+	box-sizing: border-box
+}
+
+input{
+    display: none;
+}
+
+input:hover + label{    
+    background-color:rgb(103, 196, 10);
+}
+
+input:checked + label {
+    background-color:rgb(203, 203, 7);
+    color: var(--main-color-2);
+    box-shadow: 1px1px10px ;
+}
+
+#champ_selectButton:hover,.attack_button:hover{
+    background-color: #de8f34;
+}
+
+.cards_set,#attack_set{
+    display: flex;
+    gap: 15px;
+}
+
+.champion_Cards{
+    display: flex;
+    width: 220px;
+    height: 120px;
+    background:#2a9367;
+    border: 1.5px solid #187498;
+    color: whitesmoke;
+    text-align:center;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.champion_Cards img{
+    width: 100px;
+    height: 100px;
+}
+
+#champ_selectButton{
+    width: 100px;
+    height: 30px;
+    color:black;
+    background:#F9D923;
+    border: 1.8px solid #1683ae;
+    border-radius: 8px;
+    align-items: center;
+    font-family: 'Acme', sans-serif;
+    font-size: 15px;
+}
+
+#select_attack{   
+ flex-direction: column;
+ align-items: center;
+}
+
+.attack_button{
+    width: 76px;
+    height: 32px;
+    background:#2a9367;
+    border: 1.5px solid #6306b5ca;
+    color: whitesmoke;
+    text-align:center;
+    border-radius: 10px;
+    align-items: center;
+    font-family: 'Comfortaa', cursive;
+}
+
+#fire_button{
+    color: rgb(172, 112, 0);
+
+}
+
+#water_button{
+    color:rgb(0, 246, 250);
+
+}
+
+#Grass_button{
+    color: rgb(116, 232, 0);
+}
+
+#battleDisplayResult{ 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background:#2a9367;
+    border-radius: 8px;
+    color: whitesmoke;
+    font-family: 'Acme', sans-serif;
+    border: 1.5px solid rgb(13, 13, 14);
+}
+
+#displayofMessage {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#reset_button{
+    border:1.5px #1683ae;
+    color: whitesmoke;
+    background-color:#b0ad1c ;
+    font-family: 'Acme', sans-serif;
+    border-radius: 6px;
+}
+
+.ATTACKS{
+    display: grid;
+    grid-template-columns: 120PX 120px;
+    text-align: center;
+    background: #36AE7C;
+    border-radius: 10px;
+    border: 1.6px solid rgb(7, 7, 70);
+}
+
+#Choose_Enemy_Container,#Choose_Player_Container{
+    margin: 0px;
+    padding: 0px;
+}
+
+.player_Grip_Attack, .enemy_Grip_Attack{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.player_Grip_Attack img, .enemy_Grip_Attack img{
+    width: 85px;
+    height: 85px;
+    padding: 0px;
+    margin: 0px;
+}
+
+
+#reset{
+    display: flex;
+    flex-direction: column;
+}
+
+#reset_button:hover{
+    background-color: rgb(187, 79, 43);
+}
+
+@media (max-width:720px){
+    .tittle{
+        font-size: 56px;
+    }
+    .cards_set,#attack_set{
+        flex-direction: column;
+    }
+    body{
+        background-size:cover;
+    }
+}
+
+@media (max-height:720px){
+    body{
+        background-size:cover;
+        background-repeat:repeat-y ;
+        
+    }
+}
