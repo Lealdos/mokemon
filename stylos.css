@@ -102,11 +102,11 @@ input:checked + label {
 }
 
 .attack_button{
-    width: 76px;
+    width: auto;
     height: 32px;
     background:#2a9367;
     border: 1.5px solid #6306b5ca;
-    color: whitesmoke;
+    color: rgb(154, 0, 0);
     text-align:center;
     border-radius: 10px;
     align-items: center;
@@ -123,7 +123,7 @@ input:checked + label {
 
 }
 
-#Grass_button{
+#grass_button{
     color: rgb(116, 232, 0);
 }
 

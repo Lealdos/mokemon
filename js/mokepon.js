@@ -1,17 +1,22 @@
 let Champions = []
-let attackPlayer =""
-let enemyAttack =""
+let attackPlayer = []
+let enemyChampAttack = []
+let enemyAttack =[]
 let combatDecision =""
-let currentPlayerLives = 3
-let currentEnemyLives = 3
+let currentPlayerLives = 5
+let currentEnemyLives = 5
 let championOption =""
 let championsPlayerChoose = ""
 let championsEnemyChoose = ""
+let indexForPlayer
+let indexForEnemy
 
-
-let listaAtaques = []
-let listllena = ""
-let nuevavaina
+let ChampionSelectName
+let ListChampionAttack
+let buttonFire
+let buttonWater 
+let buttonGrass 
+let AttacksButtons
 
 class Champion{
     constructor(name,img,lives){
@@ -26,46 +31,53 @@ class Champion{
 let Hipodoge = new Champion("Hipodoge",'./assets/morado.png',5)
 let Chiguirazo = new Champion("Chiguirazo",'./assets/verdesito.png',5)
 let Ratachingona = new Champion("Ratachingona",'./assets/fuego.png',5)
+let serpentina = new Champion("Serpentina",'./assets/pydos_attack.png',5)
 
 Hipodoge.attacks.push(
-    {name:'💧 Hidrojet', id:'water_button', element: 'watter'},
-    {name:'💧Waterfall', id:'water_button', element: 'watter'},
-    {name:'💧 Surf', id:'water_button', element: 'watter'},
-    {name:'🔥 ember', id:'water_button' , element: 'grass'},
-    {name:'🌱Rock smash', id:'grass_button' , element: 'fire'},
+    {name:'💧 Hidrojet', id:'water_button', element: 'water'},
+    {name:'💧 Waterfall', id:'water_button', element: 'water'},
+    {name:'💧 Surf', id:'water_button', element: 'water'},
+    {name:'🔥 Ember', id:'fire_button' , element: 'grass'},
+    {name:'🌱 Rock Smash', id:'grass_button' , element: 'fire'},
 )
 
 Chiguirazo.attacks.push(
     {name:'🌱 Earthquake', id:'grass_button' , element: 'grass'},
-    {name:'🌱 Earth power', id:'grass_button', element: 'grass'},
-    {name:'🌱 Mud bomb', id:'grass_button', element: 'grass'},
-    {name:'💧Water gun', id:'water_button', element: 'watter'},
+    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'},
+    {name:'🌱 Mud Bomb', id:'grass_button', element: 'grass'},
+    {name:'💧 Water Gun', id:'water_button', element: 'water'},
     {name:'🔥 Fireball', id:'fire_button',element: 'fire'},
 )
 
 Ratachingona.attacks.push(
-    {name:'🔥Fire bite', id:'fire_button', element: 'fire'},
+    {name:'🔥 Fire Bite', id:'fire_button', element: 'fire'},
     {name:'🔥 Flame', id:'fire_button', element: 'fire'},
-    {name:'🔥 Pride sun', id:'fire_button', element: 'fire'},
-    {name:'💧Splash', id:'fire_button', element: 'water'},
+    {name:'🔥 Pride Sun', id:'fire_button', element: 'fire'},
+    {name:'💧 Splash', id:'water_button', element: 'water'},
     {name:'🌱 Dig', id:'grass_button', element: 'grass'},
 )
 
+serpentina.attacks.push(
+    {name:'🌱 Dig', id:'grass_button', element: 'grass'},
+    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'},
+    {name:'🔥 Ember', id:'fire_button' , element: 'grass'},
+    {name:'💧 Water Gun', id:'water_button', element: 'water'},
+    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'} 
+)
 
-Champions.push(Hipodoge,Chiguirazo,Ratachingona)
+
+Champions.push(Hipodoge,Chiguirazo,Ratachingona,serpentina)
 
 /*global var*/
 const sectionSelectAttack = document.getElementById('select_attack')
 const sectionReset = document.getElementById('reset')
 const champSelectionForm = document.querySelector('#select_champ form')
-const buttonFire = document.getElementById('fire_button')
-const buttonwater = document.getElementById('water_button')
-const buttonGrass = document.getElementById('grass_button')
 const buttonReset = document.getElementById('reset_button')
 const cartsContainer = document.getElementById('carts_container')
 const ChoosePlayerContainer =  document.getElementById('Choose_Player_Container')
 const ChooseEnemyContainer =  document.getElementById('Choose_Enemy_Container')
-const ataques = document.getElementById('attack_set')
+//
+const battleInProgress = document.getElementById('attack_set')
 
 
 // these get the id of radio boxes
@@ -101,7 +113,7 @@ function starGame(){
         <label class="champion_Cards" for=${Champion.name}>
             <p>${Champion.name}</p>
             <img src=${Champion.img} alt=${Champion.name}>
-        </label> `
+         </label> `
 
         cartsContainer.innerHTML += championOption
     })
@@ -109,9 +121,7 @@ function starGame(){
     sectionReset.style.display = 'none' 
     champSelectionForm.addEventListener('submit',playerChampSelect)
 
-    buttonFire.addEventListener('click',attackFire) 
-    buttonwater.addEventListener('click',attackWater)    
-    buttonGrass.addEventListener('click',attackGrass)
+
     buttonReset.addEventListener('click',restarGame)
 }
 
@@ -134,9 +144,8 @@ function playerChampSelect(event){
         })
         
         spanChamp.innerHTML = values.pets 
-        nuevavaina = values.pets
-        console.log(nuevavaina)
-        extractAttacks(nuevavaina)
+        ChampionSelectName = values.pets
+        extractAttacks(ChampionSelectName)    
         enemyChampSelect()
         selectAttackSection.style.display = 'flex'
         selectChampSection.style.display = 'None'
@@ -147,26 +156,59 @@ function playerChampSelect(event){
 }
 
 function extractAttacks (){
-    let champAtaccks
+    let champAttacks
     Champions.forEach((Champion) => {
-        if (nuevavaina === Champion.name) {
-            champAtaccks = Champion.attacks
-            console.log(champAtaccks)
+        if (ChampionSelectName === Champion.name) {
+            champAttacks = Champion.attacks
         }
+    })
+    displayChampsAtacck(champAttacks)
+}
+
+function displayChampsAtacck(champAtaccks){
+    champAtaccks.forEach((attacks) =>{
+        ListChampionAttack = `<button id=${attacks.id} class="attack_button AttcksB">${attacks.name}</button>
+        `
+        attack_set.innerHTML += ListChampionAttack
+    })
+    buttonFire= document.getElementById('fire_button')
+    buttonWater= document.getElementById('water_button')
+    buttonGrass= document.getElementById('grass_button')
+    AttacksButtons = document.querySelectorAll('.AttcksB')
+
+}  
+
+function attacks_pack(){
+    AttacksButtons.forEach((button)=>{
+        button.addEventListener('click',(event)=>{
+            //console.log(event.target.textContent.slice(0,2))
+            if (event.target.textContent.slice(0,2) ==='🔥' ){
+                attackPlayer.push('Element: Fire!  🔥')
+                button.style.background = '#112f59'
+                button.disabled = true
+                enemySelectAttack()
+                
+            } else if(event.target.textContent.slice(0,2) ==='💧'){
+                attackPlayer.push('Element: Water💧')
+                button.style.background = '#112f56'
+                button.disabled = true
+                enemySelectAttack()
+                
+            } else {
+                attackPlayer.push('Element: Grass🌱')
+                button.style.background = '#112f59'
+                button.disabled = true
+                enemySelectAttack()
+            }
+            starBattle ()
+            console.log("player: ",attackPlayer)
+            console.log("enemigo:",enemyAttack)
+        })
     })
 }
 
 function enemyChampSelect() {
     let enemyChamp = RamdomChoise(0, Champions.length-1);
-    // if (enemyChamp == 1) {
-        //     spanEnemyChamp.innerHTML = 'Hipodoge';
-        // } else if (enemyChamp == 2) {
-            //     spanEnemyChamp.innerHTML = 'Chiguirazo';
-            // } else if (enemyChamp == 3) {
-                //     spanEnemyChamp.innerHTML = 'Ratachingona';
-                // }
-        // ES PARA HACERLO GENERAL ABAJO SE MUESTRA
-
         Champions.forEach((Champion) => {
             if (Champion.name === Champions[enemyChamp].name){
                 championsEnemyChoose = `<img src=${Champion.img} alt=${Champion.name}>`
@@ -174,95 +216,108 @@ function enemyChampSelect() {
             })    
         
     spanEnemyChamp.innerHTML = Champions[enemyChamp].name
+    enemyChampAttack = Champions[enemyChamp].attacks
+    attacks_pack()
   }
 
 function enemySelectAttack(){
-    let attack = RamdomChoise(0,3)
-    switch(attack) {
-        case 1:
-            enemyAttack = "Fire🔥"
-            break
-        case 2:
-            enemyAttack = "Water💧"
-            break
-        case 3:
-            enemyAttack = "Grass🌱"
-            break
-      }
+    let attack = RamdomChoise(0,enemyChampAttack.length-1)
+    if (attack === 0 || attack ===1 ){
+        enemyAttack.push("Element: Fire!  🔥")
+    } else if(attack === 2 || attack ===3 ){
+        enemyAttack.push("Element: Water💧")
+    }else {
+        enemyAttack.push("Element: Grass🌱")
+    }
 }
 
-function attackGrass(){
-    attackPlayer = 'Grass🌱'
-    enemySelectAttack()
-    combat()
-    attackmessage()
+
+function starBattle (){
+    if (attackPlayer.length ===5) {
+        mokemonBattle()
+    }
 }
 
-function attackWater(){
-    attackPlayer ='Water💧'
-    enemySelectAttack()
+function mokemonBattle(){
     combat()
-    attackmessage()
-}
-
-function attackFire(){
-    attackPlayer ='Fire🔥'
-    enemySelectAttack()
-    combat()
-    attackmessage()
- 
+    if (currentEnemyLives>0 || currentPlayerLives >0){
+        AttacksButtons.forEach((button)=>{
+            button.style.background = '#2a9367'
+            button.disabled = false
+        })
+    }
+    attackPlayer = []
+    enemyAttack = []
 }
 
 function attackmessage(){
     sectionMessage.innerHTML = combatDecision
+
     let newPlayerLine = document.createElement('p')
-    newPlayerLine.innerHTML = attackPlayer
+    newPlayerLine.innerHTML = indexForPlayer
     newPlayerAttack.appendChild(newPlayerLine)
 
     let newEnemyline = document.createElement('p')
-    newEnemyline.innerHTML = enemyAttack
+    newEnemyline.innerHTML = indexForEnemy
     newEnemyAttack.appendChild(newEnemyline)
     checklives() 
 }
 
-function endBattle(battleResult){
-    //battleResult { this come from the funtion check lives type: str}
-    sectionMessage.innerHTML = battleResult
-    //Turn off the battle button
+function indexplayers(player,enemy){
+    indexForPlayer = attackPlayer[player]
+    indexForEnemy = enemyAttack[enemy]
 
-    sectionReset.style.display = 'flex'
-    
-    buttonFire.disabled = true
-    
-    buttonwater.disabled = true
-    
-    buttonGrass.disabled = true
-}
-
-function checklives(){
-    if (currentEnemyLives == 0){
-        endBattle("You won the battle🥳")
-    }
-    else if (currentPlayerLives == 0){
-            endBattle("You lost the battle ☠💀")
-    }
 }
 
 function combat(){
-    if (attackPlayer == enemyAttack) {
-        combatDecision = "is a tie😅"
-    } else if ((attackPlayer == "Fire🔥" && enemyAttack == "Grass🌱") || 
-            (attackPlayer == "Water💧" && enemyAttack == "Fire🔥") ||
-            (attackPlayer == "Grass🌱" && enemyAttack == "Water💧")) {
-                combatDecision = "You win this combat 🤩"
-                currentEnemyLives +=-1 
-                spanEnemylives.innerHTML = "lives " + currentEnemyLives
-            } 
-    else {combatDecision = "Enemy win this combat🤯"
-            currentPlayerLives += -1
-            spanPlayerlives.innerHTML = "lives " + currentPlayerLives
-        }   
+    for (let index = 0; index < attackPlayer.length; index++) {
+        if (attackPlayer[index] === enemyAttack[index]){
+            indexplayers(index,index)
+            combatDecision = "is a tie😅"
+            attackmessage()
+            
+        } else if ((attackPlayer[index] == "Element: Fire!  🔥" && enemyAttack[index] == "Element: Grass🌱") || 
+                (attackPlayer[index] == "Element: Water💧" && enemyAttack[index] == "Element: Fire!  🔥") ||
+                (attackPlayer[index] == "Element: Grass🌱" && enemyAttack[index] == "Element: Water💧")) {
+                    indexplayers(index,index)
+                    combatDecision = "You win this combat 🤩"
+                    currentEnemyLives +=-1 
+                    spanEnemylives.innerHTML = "lives " + currentEnemyLives
+                    attackmessage()
+                }
+        else {
+                indexplayers(index,index)
+                combatDecision = "Enemy win this combat🤯"
+                currentPlayerLives += -1
+                spanPlayerlives.innerHTML = "lives " + currentPlayerLives
+                attackmessage()
+
+        }
+        
+    
+    }
+    //checklives() 
 }
+
+function endBattle(battleResult){
+    //battleResult { this come from the funtion checklives type: str}
+    sectionMessage.innerHTML = battleResult
+    //Turn off the battle button
+    sectionReset.style.display = 'flex'
+}
+
+function checklives(){
+    if (currentEnemyLives <=0){
+        endBattle("You won the battle🥳")
+    }
+    else if (currentPlayerLives <= 0){
+            endBattle("You lost the battle ☠💀")
+    }
+    else if (currentEnemyLives <=0 && currentPlayerLives <=0){
+        endBattle("The battle was a draw 😒")
+    }
+}
+
 
 function restarGame(){
     location.reload()
