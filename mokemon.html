@@ -4,22 +4,33 @@
         <meta charset="utf-8"/>
         <title> Mokepon!</title>
         <link rel="stylesheet" href="stylos.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
             <section id="select_champ">
                 <form>
-                    <h1 class="tittle"> Mokepon Battle! 🔥💧🌱 </h1>
+                    <h1 class="tittle"> 🌱💧🔥 Mokepon Game!! 🔥💧🌱 </h1>
                     <h2 class="subtittle">Choose your champion: </h2>
                     <div id='carts_container' class="cards_set">
                     </div>
-
-                    <p><button id="champ_selectButton">Start Battle!!  </button></p>
-            </form>
+                    <p><button id="champ_selectButton">Start Battle!!</button></p>
+                </form>
             </section>
-
+            <section id="Show_Map">
+                <h2 class="subtittle"> Find a battle with your mokepon</h2>
+                <canvas id="Maps"></canvas>
+                <section id="button_Move">
+                    <button onmouseup="StopMove()" onmousedown="MoveChampToUp()">⬆</button>
+                    <div> 
+                        <button onmousedown="MoveChampToLeft()" onmouseup="StopMove()" >⬅</button>
+                        <button onmouseup="StopMove()" onmousedown="MoveChampToDown()">⬇</button>
+                        <button onmouseup="StopMove()" onmousedown="MoveChampToRight()">➡</button>
+                    </div>
+                </section>
+            </section>
             <section id="select_attack">
-                <h1 class="tittle"> Mokepon Battle!🔥💧🌱 </h1>
-                <h2 class="subtittle">Choose you atacck</h2>
+                <h1 class="tittle"> Mokepon Battle!!🔥💧🌱 </h1>
+                <h2 class="subtittle">Choose your 5 attacks</h2>
                 <div id="attack_set">
                 </div>
                 <div>

@@ -1,5 +1,5 @@
 let Champions = []
-let attackPlayer = []
+let PlayerAttacks = []
 let enemyChampAttack = []
 let enemyAttack =[]
 let combatDecision =""
@@ -17,58 +17,23 @@ let buttonFire
 let buttonWater 
 let buttonGrass 
 let AttacksButtons
-
-class Champion{
-    constructor(name,img,lives){
-        this.name = name
-        this.img = img
-        this.lives = lives
-        this.attacks =[]
-    }
-
-}
-
-let Hipodoge = new Champion("Hipodoge",'./assets/morado.png',5)
-let Chiguirazo = new Champion("Chiguirazo",'./assets/verdesito.png',5)
-let Ratachingona = new Champion("Ratachingona",'./assets/fuego.png',5)
-let serpentina = new Champion("Serpentina",'./assets/pydos_attack.png',5)
-
-Hipodoge.attacks.push(
-    {name:'💧 Hidrojet', id:'water_button', element: 'water'},
-    {name:'💧 Waterfall', id:'water_button', element: 'water'},
-    {name:'💧 Surf', id:'water_button', element: 'water'},
-    {name:'🔥 Ember', id:'fire_button' , element: 'grass'},
-    {name:'🌱 Rock Smash', id:'grass_button' , element: 'fire'},
-)
-
-Chiguirazo.attacks.push(
-    {name:'🌱 Earthquake', id:'grass_button' , element: 'grass'},
-    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'},
-    {name:'🌱 Mud Bomb', id:'grass_button', element: 'grass'},
-    {name:'💧 Water Gun', id:'water_button', element: 'water'},
-    {name:'🔥 Fireball', id:'fire_button',element: 'fire'},
-)
-
-Ratachingona.attacks.push(
-    {name:'🔥 Fire Bite', id:'fire_button', element: 'fire'},
-    {name:'🔥 Flame', id:'fire_button', element: 'fire'},
-    {name:'🔥 Pride Sun', id:'fire_button', element: 'fire'},
-    {name:'💧 Splash', id:'water_button', element: 'water'},
-    {name:'🌱 Dig', id:'grass_button', element: 'grass'},
-)
-
-serpentina.attacks.push(
-    {name:'🌱 Dig', id:'grass_button', element: 'grass'},
-    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'},
-    {name:'🔥 Ember', id:'fire_button' , element: 'grass'},
-    {name:'💧 Water Gun', id:'water_button', element: 'water'},
-    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'} 
-)
+let indexChampionPlayer
+let collisionhappen = false
+let MapBackground = new Image()
+MapBackground.src = "./assets/mokemap.png"
 
 
-Champions.push(Hipodoge,Chiguirazo,Ratachingona,serpentina)
+
 
 /*global var*/
+const keys = {
+    UP : 38,
+    DOWN : 40,
+    LEFT : 37,
+    RIGHT : 39
+
+};
+
 const sectionSelectAttack = document.getElementById('select_attack')
 const sectionReset = document.getElementById('reset')
 const champSelectionForm = document.querySelector('#select_champ form')
@@ -76,9 +41,25 @@ const buttonReset = document.getElementById('reset_button')
 const cartsContainer = document.getElementById('carts_container')
 const ChoosePlayerContainer =  document.getElementById('Choose_Player_Container')
 const ChooseEnemyContainer =  document.getElementById('Choose_Enemy_Container')
-//
 const battleInProgress = document.getElementById('attack_set')
+const SectionShowMap = document.getElementById('Show_Map')
+const Maps = document.getElementById('Maps')
+let board = Maps.getContext('2d')
 
+// Size of the maps in canvas
+// Maps.height = 350
+// Maps.width = 500
+
+let heightMap
+let widthMap = window.innerWidth - 20 
+const Maxwidth = 520
+if (widthMap > Maxwidth){
+    widthMap = Maxwidth - 20
+}
+
+heightMap = widthMap * 600/800
+Maps.width = widthMap
+Maps.height = heightMap
 
 // these get the id of radio boxes
 
@@ -102,12 +83,116 @@ const newPlayerAttack = document.getElementById("playerDisplayAttack")
 const newEnemyAttack = document.getElementById("enemyDisplayAttack")
 
 
+class Champion{
+    constructor(name,img,lives,mapPhoto,x,y){
+        this.name = name
+        this.img = img
+        this.lives = lives
+        this.attacks = []
+        this.mapPhoto = new Image()
+        this.mapPhoto.src = mapPhoto
+        this.width = 50
+        this.high = 50
+        this.x = x
+        this.y = y
+        this.speedX = 0
+        this.speedY = 0
+        }
+        paintChampion(){
+            board.drawImage(
+            this.mapPhoto,
+            this.x,
+            this.y,
+            this.width,
+            this.high
+            )
+        }
+
+}
+
+let Hipodoge = new Champion("Hipodoge",'./assets/Hipodoge.png',5,'./assets/Hipodogemap.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
+let Chiguirazo = new Champion("Chiguirazo",'./assets/Chiguirazo.png',5,'./assets/Chiguirazomap.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
+let Ratachingona = new Champion("Ratachingona",'./assets/Ratachingona.png',5,'./assets/Ratachingonamap.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
+let Serpentina = new Champion("Serpentina",'./assets/Serpentina.png',5,'./assets/Serpentina.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
+
+let SerpentinaE = new Champion("Serpentina",'./assets/morado.png',5,'./assets/morado.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
+let RatachingonaE = new Champion("Ratachingona",'./assets/Ratachingona.png',5,'./assets/Ratachingonamap.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
+let ChiguirazoE = new Champion("Chiguirazo",'./assets/Chiguirazo.png',5,'./assets/Chiguirazomap.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
+let HipodogeE = new Champion("Hipodoge",'./assets/Hipodoge.png',5,'./assets/Hipodogemap.png',x = RamdomChoise(60,140), y = RamdomChoise(180,Maps.height-50))
+
+Hipodoge.attacks.push(
+    {name:'💧 Hidrojet', id:'water_button', element: 'water'},
+    {name:'💧 Waterfall', id:'water_button', element: 'water'},
+    {name:'💧 Surf', id:'water_button', element: 'water'},
+    {name:'🔥 Ember', id:'fire_button' , element: 'grass'},
+    {name:'🌱 Rock Smash', id:'grass_button' , element: 'fire'},
+)
+HipodogeE.attacks.push(
+    {name:'💧 Hidrojet', id:'water_button', element: 'water'},
+    {name:'💧 Waterfall', id:'water_button', element: 'water'},
+    {name:'💧 Surf', id:'water_button', element: 'water'},
+    {name:'🔥 Ember', id:'fire_button' , element: 'grass'},
+    {name:'🌱 Rock Smash', id:'grass_button' , element: 'fire'},
+)
+Chiguirazo.attacks.push(
+    {name:'🌱 Earthquake', id:'grass_button' , element: 'grass'},
+    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'},
+    {name:'🌱 Mud Bomb', id:'grass_button', element: 'grass'},
+    {name:'💧 Water Gun', id:'water_button', element: 'water'},
+    {name:'🔥 Fireball', id:'fire_button',element: 'fire'},
+)
+
+ChiguirazoE.attacks.push(
+    {name:'🌱 Earthquake', id:'grass_button' , element: 'grass'},
+    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'},
+    {name:'🌱 Mud Bomb', id:'grass_button', element: 'grass'},
+    {name:'💧 Water Gun', id:'water_button', element: 'water'},
+    {name:'🔥 Fireball', id:'fire_button',element: 'fire'},
+)
+
+
+Ratachingona.attacks.push(
+    {name:'🔥 Fire Bite', id:'fire_button', element: 'fire'},
+    {name:'🔥 Flame', id:'fire_button', element: 'fire'},
+    {name:'🔥 Pride Sun', id:'fire_button', element: 'fire'},
+    {name:'💧 Splash', id:'water_button', element: 'water'},
+    {name:'🌱 Dig', id:'grass_button', element: 'grass'},
+)
+
+RatachingonaE.attacks.push(
+    {name:'🔥 Fire Bite', id:'fire_button', element: 'fire'},
+    {name:'🔥 Flame', id:'fire_button', element: 'fire'},
+    {name:'🔥 Pride Sun', id:'fire_button', element: 'fire'},
+    {name:'💧 Splash', id:'water_button', element: 'water'},
+    {name:'🌱 Dig', id:'grass_button', element: 'grass'},
+)
+Serpentina.attacks.push(
+    {name:'🌱 Dig', id:'grass_button', element: 'grass'},
+    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'},
+    {name:'🔥 Ember', id:'fire_button' , element: 'grass'},
+    {name:'💧 Water Gun', id:'water_button', element: 'water'},
+    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'} 
+)
+
+SerpentinaE.attacks.push(
+    {name:'🌱 Dig', id:'grass_button', element: 'grass'},
+    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'},
+    {name:'🔥 Ember', id:'fire_button' , element: 'grass'},
+    {name:'💧 Water Gun', id:'water_button', element: 'water'},
+    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'} 
+)
+
+
+
+Champions.push(Hipodoge,Chiguirazo,Ratachingona,Serpentina)
+
 
 function starGame(){
     /* get the ID of all the HTML element need it and hide the ones that
      no need it at star of the game*/
    
-    sectionSelectAttack.style.display = 'None'
+    sectionSelectAttack.style.display = 'none'
+    SectionShowMap.style.display = 'none'
     Champions.forEach((Champion) => {
         championOption = `<input type="radio" name="pets"  id=${Champion.name} value=${Champion.name} />
         <label class="champion_Cards" for=${Champion.name}>
@@ -142,13 +227,14 @@ function playerChampSelect(event){
                 ChoosePlayerContainer.innerHTML += championsPlayerChoose
             }
         })
-        
         spanChamp.innerHTML = values.pets 
         ChampionSelectName = values.pets
-        extractAttacks(ChampionSelectName)    
-        enemyChampSelect()
-        selectAttackSection.style.display = 'flex'
+        indexChampionPlayer = [Champions.findIndex(checkChampion)]
+        extractAttacks()    
         selectChampSection.style.display = 'None'
+        //selectAttackSection.style.display = 'flex'
+        SectionShowMap.style.display = 'flex'  
+        starmap()
     }
     else {
         alert('Please select a champ')
@@ -175,7 +261,6 @@ function displayChampsAtacck(champAtaccks){
     buttonWater= document.getElementById('water_button')
     buttonGrass= document.getElementById('grass_button')
     AttacksButtons = document.querySelectorAll('.AttcksB')
-
 }  
 
 function attacks_pack(){
@@ -183,80 +268,79 @@ function attacks_pack(){
         button.addEventListener('click',(event)=>{
             //console.log(event.target.textContent.slice(0,2))
             if (event.target.textContent.slice(0,2) ==='🔥' ){
-                attackPlayer.push('Element: Fire!  🔥')
+                PlayerAttacks.push('Element: Fire!  🔥')
                 button.style.background = '#112f59'
                 button.disabled = true
                 enemySelectAttack()
                 
             } else if(event.target.textContent.slice(0,2) ==='💧'){
-                attackPlayer.push('Element: Water💧')
+                PlayerAttacks.push('Element: Water💧')
                 button.style.background = '#112f56'
                 button.disabled = true
                 enemySelectAttack()
                 
             } else {
-                attackPlayer.push('Element: Grass🌱')
+                PlayerAttacks.push('Element: Grass🌱')
                 button.style.background = '#112f59'
                 button.disabled = true
                 enemySelectAttack()
             }
             starBattle ()
-            console.log("player: ",attackPlayer)
-            console.log("enemigo:",enemyAttack)
         })
     })
 }
 
-function enemyChampSelect() {
-    let enemyChamp = RamdomChoise(0, Champions.length-1);
+function enemyChampSelect(MyEnemy) {
+    //let enemyChamp = RamdomChoise(0, Champions.length-1);
+        
         Champions.forEach((Champion) => {
-            if (Champion.name === Champions[enemyChamp].name){
-                championsEnemyChoose = `<img src=${Champion.img} alt=${Champion.name}>`
+            if (Champion.name === MyEnemy.name){
+                championsEnemyChoose = `<img src=${MyEnemy.img} alt=${MyEnemy.name}>`
                 ChooseEnemyContainer.innerHTML += championsEnemyChoose} 
             })    
         
-    spanEnemyChamp.innerHTML = Champions[enemyChamp].name
-    enemyChampAttack = Champions[enemyChamp].attacks
+    spanEnemyChamp.innerHTML = MyEnemy.name
+    enemyChampAttack = MyEnemy.attacks
     attacks_pack()
   }
 
 function enemySelectAttack(){
+    
     let attack = RamdomChoise(0,enemyChampAttack.length-1)
-    if (attack === 0 || attack ===1 ){
+    if (attack === 0 || attack === 1 ){
         enemyAttack.push("Element: Fire!  🔥")
-    } else if(attack === 2 || attack ===3 ){
+    } else if(attack === 2 || attack === 3){
         enemyAttack.push("Element: Water💧")
     }else {
         enemyAttack.push("Element: Grass🌱")
     }
+    console.log(enemyAttack)
 }
 
 
 function starBattle (){
-    if (attackPlayer.length ===5) {
-        mokemonBattle()
+    if (PlayerAttacks.length === 5) {
+        mokemonBattle() 
     }
 }
 
 function mokemonBattle(){
     combat()
-    if (currentEnemyLives>0 || currentPlayerLives >0){
+    if (currentEnemyLives > 0 || currentPlayerLives > 0){
         AttacksButtons.forEach((button)=>{
             button.style.background = '#2a9367'
             button.disabled = false
         })
     }
-    attackPlayer = []
+    PlayerAttacks = []
     enemyAttack = []
 }
 
 function attackmessage(){
-    sectionMessage.innerHTML = combatDecision
-
     let newPlayerLine = document.createElement('p')
     newPlayerLine.innerHTML = indexForPlayer
     newPlayerAttack.appendChild(newPlayerLine)
-
+    
     let newEnemyline = document.createElement('p')
     newEnemyline.innerHTML = indexForEnemy
     newEnemyAttack.appendChild(newEnemyline)
@@ -264,39 +348,45 @@ function attackmessage(){
 }
 
 function indexplayers(player,enemy){
-    indexForPlayer = attackPlayer[player]
+    indexForPlayer = PlayerAttacks[player]
     indexForEnemy = enemyAttack[enemy]
 
 }
 
 function combat(){
-    for (let index = 0; index < attackPlayer.length; index++) {
-        if (attackPlayer[index] === enemyAttack[index]){
+    ClearAttacks()
+    for (let index = 0; index < PlayerAttacks.length; index++) {
+        //Tie
+        if (PlayerAttacks[index] === enemyAttack[index]){
             indexplayers(index,index)
-            combatDecision = "is a tie😅"
             attackmessage()
             
-        } else if ((attackPlayer[index] == "Element: Fire!  🔥" && enemyAttack[index] == "Element: Grass🌱") || 
-                (attackPlayer[index] == "Element: Water💧" && enemyAttack[index] == "Element: Fire!  🔥") ||
-                (attackPlayer[index] == "Element: Grass🌱" && enemyAttack[index] == "Element: Water💧")) {
+        } // Player Win
+        else if ((PlayerAttacks[index] === "Element: Fire!  🔥" && enemyAttack[index] === "Element: Grass🌱") || 
+                (PlayerAttacks[index] === "Element: Water💧" && enemyAttack[index] === "Element: Fire!  🔥") ||
+                (PlayerAttacks[index] === "Element: Grass🌱" && enemyAttack[index] === "Element: Water💧")) {
                     indexplayers(index,index)
-                    combatDecision = "You win this combat 🤩"
                     currentEnemyLives +=-1 
                     spanEnemylives.innerHTML = "lives " + currentEnemyLives
                     attackmessage()
                 }
+                //Player loss
         else {
                 indexplayers(index,index)
-                combatDecision = "Enemy win this combat🤯"
                 currentPlayerLives += -1
                 spanPlayerlives.innerHTML = "lives " + currentPlayerLives
                 attackmessage()
 
         }
         
-    
+    }   
+}
+
+function ClearAttacks(){
+    if (PlayerAttacks.length ===5){
+        newPlayerAttack.innerHTML = ""
+        newEnemyAttack.innerHTML = ""
     }
-    //checklives() 
 }
 
 function endBattle(battleResult){
@@ -307,21 +397,155 @@ function endBattle(battleResult){
 }
 
 function checklives(){
-    if (currentEnemyLives <=0){
+    if (currentEnemyLives < currentPlayerLives && currentPlayerLives > 0 ){
+        currentPlayerLives 
+        combatDecision = "You win this combat 🤩"
+        sectionMessage.innerHTML = combatDecision
+        
+    }
+    else if (currentEnemyLives > currentPlayerLives && currentEnemyLives > 0 ){
+            combatDecision = "Enemy win this combat 😫"
+            sectionMessage.innerHTML = combatDecision
+
+    }
+    else if (currentEnemyLives === currentPlayerLives ){
+            combatDecision = "is a tie😅"
+            sectionMessage.innerHTML = combatDecision
+    }
+    if (currentEnemyLives <= 0 && currentPlayerLives > 0){
+        if (currentEnemyLives<0){
+            currentEnemyLives =0
+        }
         endBattle("You won the battle🥳")
     }
-    else if (currentPlayerLives <= 0){
+    else if (currentPlayerLives <= 0 && currentEnemyLives > 0){
+        if (currentPlayerLives<=0){
+            currentPlayerLives = 0
+        }
             endBattle("You lost the battle ☠💀")
     }
     else if (currentEnemyLives <=0 && currentPlayerLives <=0){
-        endBattle("The battle was a draw 😒")
+            endBattle("The battle was a draw 😒")
+            currentPlayerLives = 0
+            currentEnemyLives = 0
+    }
+    
+}
+
+function paintCanvas(){
+    Champions[indexChampionPlayer].x = Champions[indexChampionPlayer].x + Champions[indexChampionPlayer].speedX
+    Champions[indexChampionPlayer].y = Champions[indexChampionPlayer].y + Champions[indexChampionPlayer].speedY
+    board.clearRect(0,0,Maps.width,Maps.height)
+    board.drawImage(
+        MapBackground,
+        0,
+        0,
+        Maps.width,
+        Maps.height
+    )
+    Champions[indexChampionPlayer].paintChampion()
+    SerpentinaE.paintChampion()
+    RatachingonaE.paintChampion()
+    HipodogeE.paintChampion()
+    ChiguirazoE.paintChampion()
+    if (Champions[indexChampionPlayer].speedX !== 0 || Champions[indexChampionPlayer].speedY !== 0) {
+        CheckColission(SerpentinaE)
+        CheckColission(RatachingonaE)
+        CheckColission(ChiguirazoE)
+        CheckColission(HipodogeE)
     }
 }
 
+function starmap(){
+    paintCanvas()
+    document.addEventListener("keydown", checkSteps);
+    document.addEventListener("keyup", StopMove);
+}
+
+function checkSteps(event){
+    if (collisionhappen===false){
+        MoveKeys(event)
+    }
+}
+
+function checkChampion(Champions){
+    return Champions.name === ChampionSelectName
+}
+
+function MoveChampToRight(){
+    Champions[indexChampionPlayer].speedX =  5
+    paintCanvas()
+}
+
+function MoveChampToLeft(){
+    Champions[indexChampionPlayer].speedX =  - 5
+    paintCanvas()
+}
+
+function MoveChampToUp(){
+    Champions[indexChampionPlayer].speedY =  - 5
+    paintCanvas()
+}
+
+function MoveChampToDown(){
+    Champions[indexChampionPlayer].speedY =  5
+    paintCanvas()
+}
+
+function StopMove(){
+    Champions[indexChampionPlayer].speedY = 0
+    Champions[indexChampionPlayer].speedX = 0
+}
+
+function MoveKeys(event){
+    switch (event.keyCode) {
+        case keys.DOWN:
+            MoveChampToDown()
+            break;
+        case keys.UP:
+            MoveChampToUp()
+            break;
+        case keys.LEFT:
+            MoveChampToLeft()
+            break;
+        case keys.RIGHT:
+            MoveChampToRight()
+            break;
+        default:
+            break;
+    }
+
+}
 
 function restarGame(){
     location.reload()
 }
 
+function CheckColission(Enemy){
+    const EnemyUp = Enemy.y
+    const EnemyDown = Enemy.y + Enemy.high
+    const EnemyRight = Enemy.x + Enemy.width
+    const EnemyLeft = Enemy.x
+
+    const ChampionUP = 
+        Champions[indexChampionPlayer].y
+    const DownChampion = 
+        Champions[indexChampionPlayer].y + Champions[indexChampionPlayer].high
+    const ChampionRight = 
+        Champions[indexChampionPlayer].x + Champions[indexChampionPlayer].width
+    const ChampionLeft = 
+        Champions[indexChampionPlayer].x
+    if (
+        DownChampion < EnemyUp || ChampionUP > EnemyDown ||
+        ChampionRight < EnemyLeft || ChampionLeft > EnemyRight 
+        ){
+            return
+        }
+        collisionhappen = true
+        selectAttackSection.style.display = 'flex'
+        enemyChampSelect(Enemy)
+        SectionShowMap.style.display = 'none' 
+    //alert("chocaste con "+ Enemy.name)
+}
 
 window.addEventListener('load', starGame)
