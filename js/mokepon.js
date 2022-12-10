@@ -11,6 +11,8 @@ let championsEnemyChoose = ""
 let indexForPlayer
 let indexForEnemy
 
+let playerId = null
+
 let ChampionSelectName
 let ListChampionAttack
 let buttonFire
@@ -45,6 +47,8 @@ const battleInProgress = document.getElementById('attack_set')
 const SectionShowMap = document.getElementById('Show_Map')
 const Maps = document.getElementById('Maps')
 let board = Maps.getContext('2d')
+
+
 
 // Size of the maps in canvas
 // Maps.height = 350
@@ -120,67 +124,46 @@ let RatachingonaE = new Champion("Ratachingona",'./assets/Ratachingona.png',5,'.
 let ChiguirazoE = new Champion("Chiguirazo",'./assets/Chiguirazo.png',5,'./assets/Chiguirazomap.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
 let HipodogeE = new Champion("Hipodoge",'./assets/Hipodoge.png',5,'./assets/Hipodogemap.png',x = RamdomChoise(60,140), y = RamdomChoise(180,Maps.height-50))
 
-Hipodoge.attacks.push(
+const HipodogeAttacks =[
     {name:'💧 Hidrojet', id:'water_button', element: 'water'},
     {name:'💧 Waterfall', id:'water_button', element: 'water'},
     {name:'💧 Surf', id:'water_button', element: 'water'},
     {name:'🔥 Ember', id:'fire_button' , element: 'grass'},
-    {name:'🌱 Rock Smash', id:'grass_button' , element: 'fire'},
-)
-HipodogeE.attacks.push(
-    {name:'💧 Hidrojet', id:'water_button', element: 'water'},
-    {name:'💧 Waterfall', id:'water_button', element: 'water'},
-    {name:'💧 Surf', id:'water_button', element: 'water'},
-    {name:'🔥 Ember', id:'fire_button' , element: 'grass'},
-    {name:'🌱 Rock Smash', id:'grass_button' , element: 'fire'},
-)
-Chiguirazo.attacks.push(
+    {name:'🌱 Rock Smash', id:'grass_button' , element: 'fire'}, 
+]
+Hipodoge.attacks.push(... HipodogeAttacks)
+HipodogeE.attacks.push(... HipodogeAttacks)
+
+const ChiguirazoAttacks = [    
     {name:'🌱 Earthquake', id:'grass_button' , element: 'grass'},
     {name:'🌱 Earth Power', id:'grass_button', element: 'grass'},
     {name:'🌱 Mud Bomb', id:'grass_button', element: 'grass'},
     {name:'💧 Water Gun', id:'water_button', element: 'water'},
     {name:'🔥 Fireball', id:'fire_button',element: 'fire'},
-)
+]
+Chiguirazo.attacks.push(...ChiguirazoAttacks)
+ChiguirazoE.attacks.push(...ChiguirazoAttacks)
 
-ChiguirazoE.attacks.push(
-    {name:'🌱 Earthquake', id:'grass_button' , element: 'grass'},
-    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'},
-    {name:'🌱 Mud Bomb', id:'grass_button', element: 'grass'},
-    {name:'💧 Water Gun', id:'water_button', element: 'water'},
-    {name:'🔥 Fireball', id:'fire_button',element: 'fire'},
-)
-
-
-Ratachingona.attacks.push(
+const RatachingonaAttacks = [    
     {name:'🔥 Fire Bite', id:'fire_button', element: 'fire'},
     {name:'🔥 Flame', id:'fire_button', element: 'fire'},
     {name:'🔥 Pride Sun', id:'fire_button', element: 'fire'},
     {name:'💧 Splash', id:'water_button', element: 'water'},
     {name:'🌱 Dig', id:'grass_button', element: 'grass'},
-)
+]
+Ratachingona.attacks.push(...RatachingonaAttacks)
+RatachingonaE.attacks.push(...RatachingonaAttacks)
 
-RatachingonaE.attacks.push(
-    {name:'🔥 Fire Bite', id:'fire_button', element: 'fire'},
-    {name:'🔥 Flame', id:'fire_button', element: 'fire'},
-    {name:'🔥 Pride Sun', id:'fire_button', element: 'fire'},
-    {name:'💧 Splash', id:'water_button', element: 'water'},
-    {name:'🌱 Dig', id:'grass_button', element: 'grass'},
-)
-Serpentina.attacks.push(
+const SerpentinaAttacks = [
     {name:'🌱 Dig', id:'grass_button', element: 'grass'},
     {name:'🌱 Earth Power', id:'grass_button', element: 'grass'},
     {name:'🔥 Ember', id:'fire_button' , element: 'grass'},
     {name:'💧 Water Gun', id:'water_button', element: 'water'},
     {name:'🌱 Earth Power', id:'grass_button', element: 'grass'} 
-)
+]
+Serpentina.attacks.push(...SerpentinaAttacks)
 
-SerpentinaE.attacks.push(
-    {name:'🌱 Dig', id:'grass_button', element: 'grass'},
-    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'},
-    {name:'🔥 Ember', id:'fire_button' , element: 'grass'},
-    {name:'💧 Water Gun', id:'water_button', element: 'water'},
-    {name:'🌱 Earth Power', id:'grass_button', element: 'grass'} 
-)
+SerpentinaE.attacks.push(...SerpentinaAttacks)
 
 
 
@@ -208,6 +191,8 @@ function starGame(){
 
 
     buttonReset.addEventListener('click',restarGame)
+
+    JoinToTheGame()
 }
 
 function RamdomChoise(min, max) {
@@ -239,6 +224,8 @@ function playerChampSelect(event){
     else {
         alert('Please select a champ')
         } 
+    
+    MokemonSelect(Champions[indexChampionPlayer].name)
 }
 
 function extractAttacks (){
@@ -454,6 +441,29 @@ function paintCanvas(){
         CheckColission(ChiguirazoE)
         CheckColission(HipodogeE)
     }
+    sendPosition(Champions[indexChampionPlayer].x, Champions[indexChampionPlayer].y)
+}
+
+function sendPosition(positionX,positionY){
+    fetch(`http://localhost:8085/mokepon/${playerId}/position`,{
+            method: "post",
+            headers: { "content-type": "application/json"
+            },
+            body: JSON.stringify({
+            positionX,
+            positionY
+            })
+        }
+    )
+    .then(function(res){
+        if (res.ok){
+            res.json()
+                .then(function({enemys}){
+                    console.log(enemys)
+                })
+        }
+    })
+
 }
 
 function starmap(){
@@ -546,6 +556,29 @@ function CheckColission(Enemy){
         enemyChampSelect(Enemy)
         SectionShowMap.style.display = 'none' 
     //alert("chocaste con "+ Enemy.name)
+}
+
+function JoinToTheGame(){
+    fetch("http://localhost:8085/join")
+        .then(function(res){
+            if (res.ok) {
+                res.text()
+                    .then(function(answer){
+                        playerId = answer
+                    })
+            }
+        })
+}
+
+function MokemonSelect(playerselect){
+    fetch(`http://localhost:8085/mokepon/${playerId}`,{
+        method: "post",
+        headers: { "content-type": "application/json"
+        },
+        body: JSON.stringify({
+            champion: playerselect
+        })
+    })
 }
 
 window.addEventListener('load', starGame)
