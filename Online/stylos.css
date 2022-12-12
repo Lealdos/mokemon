@@ -203,6 +203,7 @@ input:checked + label {
 }
 
 #button_Move button{
+    user-select: none;
     background: rgb(96, 194, 171) ;
     border-width: thin;
     border-color: limegreen;

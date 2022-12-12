@@ -10,8 +10,10 @@ let championsPlayerChoose = ""
 let championsEnemyChoose = ""
 let indexForPlayer
 let indexForEnemy
+let ChampionsEnemy = []
 
 let playerId = null
+let enemyId = null
 
 let ChampionSelectName
 let ListChampionAttack
@@ -26,7 +28,6 @@ MapBackground.src = "./assets/mokemap.png"
 
 
 
-
 /*global var*/
 const keys = {
     UP : 38,
@@ -36,6 +37,10 @@ const keys = {
 
 };
 
+const button_Right = document.getElementById('button_Right')
+const button_Up = document.getElementById('button_Up')
+const button_Left = document.getElementById('button_Left')
+const button_Down = document.getElementById('button_Down')
 const sectionSelectAttack = document.getElementById('select_attack')
 const sectionReset = document.getElementById('reset')
 const champSelectionForm = document.querySelector('#select_champ form')
@@ -56,7 +61,7 @@ let board = Maps.getContext('2d')
 
 let heightMap
 let widthMap = window.innerWidth - 20 
-const Maxwidth = 520
+const Maxwidth = 420
 if (widthMap > Maxwidth){
     widthMap = Maxwidth - 20
 }
@@ -88,7 +93,7 @@ const newEnemyAttack = document.getElementById("enemyDisplayAttack")
 
 
 class Champion{
-    constructor(name,img,lives,mapPhoto,x,y){
+    constructor(name,img,lives,mapPhoto,id = null){
         this.name = name
         this.img = img
         this.lives = lives
@@ -97,8 +102,9 @@ class Champion{
         this.mapPhoto.src = mapPhoto
         this.width = 50
         this.high = 50
-        this.x = x
-        this.y = y
+        this.x = RamdomChoise(50,360),
+        this.y = RamdomChoise(50,Maps.height-50)
+        this.id = id
         this.speedX = 0
         this.speedY = 0
         }
@@ -114,15 +120,11 @@ class Champion{
 
 }
 
-let Hipodoge = new Champion("Hipodoge",'./assets/Hipodoge.png',5,'./assets/Hipodogemap.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
-let Chiguirazo = new Champion("Chiguirazo",'./assets/Chiguirazo.png',5,'./assets/Chiguirazomap.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
-let Ratachingona = new Champion("Ratachingona",'./assets/Ratachingona.png',5,'./assets/Ratachingonamap.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
-let Serpentina = new Champion("Serpentina",'./assets/Serpentina.png',5,'./assets/Serpentina.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
+let Hipodoge = new Champion("Hipodoge",'./assets/Hipodoge.png',5,'./assets/Hipodogemap.png')
+let Chiguirazo = new Champion("Chiguirazo",'./assets/Chiguirazo.png',5,'./assets/Chiguirazomap.png')
+let Ratachingona = new Champion("Ratachingona",'./assets/Ratachingona.png',5,'./assets/Ratachingonamap.png')
+let Serpentina = new Champion("Serpentina",'./assets/Serpentina.png',5,'./assets/Serpentina.png')
 
-let SerpentinaE = new Champion("Serpentina",'./assets/morado.png',5,'./assets/morado.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
-let RatachingonaE = new Champion("Ratachingona",'./assets/Ratachingona.png',5,'./assets/Ratachingonamap.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
-let ChiguirazoE = new Champion("Chiguirazo",'./assets/Chiguirazo.png',5,'./assets/Chiguirazomap.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
-let HipodogeE = new Champion("Hipodoge",'./assets/Hipodoge.png',5,'./assets/Hipodogemap.png',x = RamdomChoise(60,140), y = RamdomChoise(180,Maps.height-50))
 
 const HipodogeAttacks =[
     {name:'💧 Hidrojet', id:'water_button', element: 'water'},
@@ -132,7 +134,7 @@ const HipodogeAttacks =[
     {name:'🌱 Rock Smash', id:'grass_button' , element: 'fire'}, 
 ]
 Hipodoge.attacks.push(... HipodogeAttacks)
-HipodogeE.attacks.push(... HipodogeAttacks)
+//HipodogeE.attacks.push(... HipodogeAttacks)
 
 const ChiguirazoAttacks = [    
     {name:'🌱 Earthquake', id:'grass_button' , element: 'grass'},
@@ -142,7 +144,7 @@ const ChiguirazoAttacks = [
     {name:'🔥 Fireball', id:'fire_button',element: 'fire'},
 ]
 Chiguirazo.attacks.push(...ChiguirazoAttacks)
-ChiguirazoE.attacks.push(...ChiguirazoAttacks)
+//ChiguirazoE.attacks.push(...ChiguirazoAttacks)
 
 const RatachingonaAttacks = [    
     {name:'🔥 Fire Bite', id:'fire_button', element: 'fire'},
@@ -152,7 +154,7 @@ const RatachingonaAttacks = [
     {name:'🌱 Dig', id:'grass_button', element: 'grass'},
 ]
 Ratachingona.attacks.push(...RatachingonaAttacks)
-RatachingonaE.attacks.push(...RatachingonaAttacks)
+//RatachingonaE.attacks.push(...RatachingonaAttacks)
 
 const SerpentinaAttacks = [
     {name:'🌱 Dig', id:'grass_button', element: 'grass'},
@@ -163,12 +165,9 @@ const SerpentinaAttacks = [
 ]
 Serpentina.attacks.push(...SerpentinaAttacks)
 
-SerpentinaE.attacks.push(...SerpentinaAttacks)
-
-
+//SerpentinaE.attacks.push(...SerpentinaAttacks)
 
 Champions.push(Hipodoge,Chiguirazo,Ratachingona,Serpentina)
-
 
 function starGame(){
     /* get the ID of all the HTML element need it and hide the ones that
@@ -258,19 +257,15 @@ function attacks_pack(){
                 PlayerAttacks.push('Element: Fire!  🔥')
                 button.style.background = '#112f59'
                 button.disabled = true
-                enemySelectAttack()
                 
             } else if(event.target.textContent.slice(0,2) ==='💧'){
                 PlayerAttacks.push('Element: Water💧')
                 button.style.background = '#112f56'
                 button.disabled = true
-                enemySelectAttack()
-                
             } else {
                 PlayerAttacks.push('Element: Grass🌱')
                 button.style.background = '#112f59'
                 button.disabled = true
-                enemySelectAttack()
             }
             starBattle ()
         })
@@ -304,10 +299,52 @@ function enemySelectAttack(){
     console.log(enemyAttack)
 }
 
+function sendOnlineAttacks(){
+    fetch(`http://192.168.1.249:8085/mokepon/${playerId}/Attacks`,{ 
+        method: "post" ,
+        headers:{ "content-type": "application/json", 
+        },
+        body: JSON.stringify({
+            Attacks: PlayerAttacks
+        })
+    })
+    interval = setInterval(getOnlineAttacks,50)
+}
+
+function getOnlineAttacks(){
+    fetch(`http://192.168.1.249:8085/mokepon/${enemyId}/attacks`)
+        .then(function (res) {
+            if (res.ok) {
+                res.json()
+                    .then(function ({ Attacks }) {
+                        if (Attacks.length === 5) {
+                            enemyAttack = Attacks
+                            console.log("antes ",enemyAttack)
+                            mokemonBattle()
+                            ResetEnemyOnlineAttacks()
+                        }
+                    })
+            }
+        })
+
+}
+
+function ResetEnemyOnlineAttacks(){
+    fetch(`http://192.168.1.249:8085/mokepon/${enemyId}/attacks`,{    
+        method: "put" ,
+        headers:{ "content-type": "application/json", 
+        },
+        body: JSON.stringify({
+            Attacks: PlayerAttacks = []
+        })
+    })
+    console.log("despues ", enemyAttack)
+}
+            
 
 function starBattle (){
     if (PlayerAttacks.length === 5) {
-        mokemonBattle() 
+        sendOnlineAttacks()
     }
 }
 
@@ -323,24 +360,8 @@ function mokemonBattle(){
     enemyAttack = []
 }
 
-function attackmessage(){
-    let newPlayerLine = document.createElement('p')
-    newPlayerLine.innerHTML = indexForPlayer
-    newPlayerAttack.appendChild(newPlayerLine)
-    
-    let newEnemyline = document.createElement('p')
-    newEnemyline.innerHTML = indexForEnemy
-    newEnemyAttack.appendChild(newEnemyline)
-    checklives() 
-}
-
-function indexplayers(player,enemy){
-    indexForPlayer = PlayerAttacks[player]
-    indexForEnemy = enemyAttack[enemy]
-
-}
-
 function combat(){
+    clearInterval(interval)
     ClearAttacks()
     for (let index = 0; index < PlayerAttacks.length; index++) {
         //Tie
@@ -369,8 +390,25 @@ function combat(){
     }   
 }
 
+function indexplayers(player,enemy){
+    indexForPlayer = PlayerAttacks[player]
+    indexForEnemy = enemyAttack[enemy]
+
+}
+
+function attackmessage(){
+    let newPlayerLine = document.createElement('p')
+    newPlayerLine.innerHTML = indexForPlayer
+    newPlayerAttack.appendChild(newPlayerLine)
+    
+    let newEnemyline = document.createElement('p')
+    newEnemyline.innerHTML = indexForEnemy
+    newEnemyAttack.appendChild(newEnemyline)
+    checklives() 
+}
+
 function ClearAttacks(){
-    if (PlayerAttacks.length ===5){
+    if (PlayerAttacks.length === 5){
         newPlayerAttack.innerHTML = ""
         newEnemyAttack.innerHTML = ""
     }
@@ -430,22 +468,36 @@ function paintCanvas(){
         Maps.width,
         Maps.height
     )
-    Champions[indexChampionPlayer].paintChampion()
-    SerpentinaE.paintChampion()
-    RatachingonaE.paintChampion()
-    HipodogeE.paintChampion()
-    ChiguirazoE.paintChampion()
-    if (Champions[indexChampionPlayer].speedX !== 0 || Champions[indexChampionPlayer].speedY !== 0) {
-        CheckColission(SerpentinaE)
-        CheckColission(RatachingonaE)
-        CheckColission(ChiguirazoE)
-        CheckColission(HipodogeE)
-    }
+
+    Champions[indexChampionPlayer].paintChampion()  
     sendPosition(Champions[indexChampionPlayer].x, Champions[indexChampionPlayer].y)
+    
+    ChampionsEnemy.forEach(function(mokepon){
+        if(mokepon != undefined){
+            mokepon.paintChampion()
+            if ((Champions[indexChampionPlayer].speedX !== 0 || Champions[indexChampionPlayer].speedY !== 0) && collisionhappen=== false ) {
+            CheckColission(mokepon)  
+        }
+        if (collisionhappen === false ){
+            CheckColission(mokepon) 
+        }
+        }
+    })
+    // SerpentinaE.paintChampion()
+    // RatachingonaE.paintChampion()
+    // HipodogeE.paintChampion()
+    // ChiguirazoE.paintChampion()
+    // if (Champions[indexChampionPlayer].speedX !== 0 || Champions[indexChampionPlayer].speedY !== 0) {
+    //     // CheckColission(SerpentinaE)
+    //     // CheckColission(RatachingonaE)
+    //     // CheckColission(ChiguirazoE)
+    //     // CheckColission(HipodogeE)
+    // }
+  
 }
 
 function sendPosition(positionX,positionY){
-    fetch(`http://localhost:8085/mokepon/${playerId}/position`,{
+    fetch(`http://192.168.1.249:8085/mokepon/${playerId}/position`,{
             method: "post",
             headers: { "content-type": "application/json"
             },
@@ -459,7 +511,33 @@ function sendPosition(positionX,positionY){
         if (res.ok){
             res.json()
                 .then(function({enemys}){
-                    console.log(enemys)
+                    
+                    ChampionsEnemy = enemys.map(function(enemy) { 
+                        let onlineEnemy = null
+                        if(enemy.pet != undefined){
+                            const championName = enemy.pet.name || ""
+                            if (championName === 'Serpentina'){ 
+                                onlineEnemy = new Champion("Serpentina",'./assets/morado.png',5,'./assets/Serpentina.png',enemy.id)
+                                onlineEnemy.attacks.push(...SerpentinaAttacks)
+                            }
+                            else if (championName === 'Ratachingona'){
+                                onlineEnemy = new Champion("Ratachingona",'./assets/Ratachingona.png',5,'./assets/Ratachingonamap.png',enemy.id)
+                                onlineEnemy.attacks.push(...RatachingonaAttacks)
+                            } 
+                            else if (championName === 'Chiguirazo'){
+                                onlineEnemy = new Champion("Chiguirazo",'./assets/Chiguirazo.png',5,'./assets/Chiguirazomap.png',enemy.id)
+                                onlineEnemy.attacks.push(...ChiguirazoAttacks)
+                            }
+                            else if (championName === 'Hipodoge'){
+                                onlineEnemy = new Champion("Hipodoge",'./assets/Hipodoge.png',5,'./assets/Hipodogemap.png',enemy.id)
+                                onlineEnemy.attacks.push(... HipodogeAttacks)
+                            }
+                            onlineEnemy.x = enemy.x
+                            onlineEnemy.y = enemy.y
+                        }
+
+                        return onlineEnemy
+                    })
                 })
         }
     })
@@ -468,8 +546,14 @@ function sendPosition(positionX,positionY){
 
 function starmap(){
     paintCanvas()
-    document.addEventListener("keydown", checkSteps);
-    document.addEventListener("keyup", StopMove);
+    interval = setInterval(paintCanvas, 250)
+    window.addEventListener("keydown", checkSteps);
+    window.addEventListener("keyup", StopMove);
+    button_Left.addEventListener("touchstart", MoveChampToLeft);
+    button_Up.addEventListener("touchstart", MoveChampToUp);
+    button_Right.addEventListener("touchstart", MoveChampToRight);
+    button_Down.addEventListener("touchstart", MoveChampToDown);
+    window.addEventListener("touchend", StopMove);
 }
 
 function checkSteps(event){
@@ -532,34 +616,37 @@ function restarGame(){
 }
 
 function CheckColission(Enemy){
-    const EnemyUp = Enemy.y
-    const EnemyDown = Enemy.y + Enemy.high
+    const EnemyTop = Enemy.y
+    const EnemyBellow = Enemy.y + Enemy.high
     const EnemyRight = Enemy.x + Enemy.width
     const EnemyLeft = Enemy.x
 
-    const ChampionUP = 
-        Champions[indexChampionPlayer].y
-    const DownChampion = 
+    const ChampionTop = 
+        Champions[indexChampionPlayer].y 
+    const ChampionBellow = 
         Champions[indexChampionPlayer].y + Champions[indexChampionPlayer].high
     const ChampionRight = 
         Champions[indexChampionPlayer].x + Champions[indexChampionPlayer].width
     const ChampionLeft = 
         Champions[indexChampionPlayer].x
+
     if (
-        DownChampion < EnemyUp || ChampionUP > EnemyDown ||
+        ChampionBellow < EnemyTop - 1 || ChampionTop > EnemyBellow + 1 ||
         ChampionRight < EnemyLeft || ChampionLeft > EnemyRight 
         ){
             return
         }
+        StopMove()
         collisionhappen = true
-        selectAttackSection.style.display = 'flex'
+        enemyId = Enemy.id
         enemyChampSelect(Enemy)
+        selectAttackSection.style.display = 'flex'
         SectionShowMap.style.display = 'none' 
     //alert("chocaste con "+ Enemy.name)
 }
 
 function JoinToTheGame(){
-    fetch("http://localhost:8085/join")
+    fetch("http://192.168.1.249:8085/join")
         .then(function(res){
             if (res.ok) {
                 res.text()
@@ -571,12 +658,12 @@ function JoinToTheGame(){
 }
 
 function MokemonSelect(playerselect){
-    fetch(`http://localhost:8085/mokepon/${playerId}`,{
+    fetch(`http://192.168.1.249:8085/mokepon/${playerId}`,{
         method: "post",
         headers: { "content-type": "application/json"
         },
         body: JSON.stringify({
-            champion: playerselect
+            Champion: playerselect
         })
     })
 }

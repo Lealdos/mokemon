@@ -20,11 +20,11 @@
                 <h2 class="subtittle"> Find a battle with your mokepon</h2>
                 <canvas id="Maps"></canvas>
                 <section id="button_Move">
-                    <button onmouseup="StopMove()" onmousedown="MoveChampToUp()">⬆</button>
+                    <button id="button_Up"  onmouseup="StopMove()"  ontouchend ="StopMove()" onmousedown="MoveChampToUp()" ontouchstar="MoveChampToUp()">⬆</button>
                     <div> 
-                        <button onmousedown="MoveChampToLeft()" onmouseup="StopMove()" >⬅</button>
-                        <button onmouseup="StopMove()" onmousedown="MoveChampToDown()">⬇</button>
-                        <button onmouseup="StopMove()" onmousedown="MoveChampToRight()">➡</button>
+                        <button id="button_Left" onmouseup="StopMove()" ontouchend="StopMove()" onmousedown="MoveChampToLeft()" ontouchstar="MoveChampToLeft()">⬅</button>
+                        <button id="button_Down" onmouseup="StopMove()" ontouchend="StopMove()"  onmousedown="MoveChampToDown()" ontouchstar="MoveChampToDown()">⬇</button>
+                        <button id="button_Right"  onmouseup="StopMove()" ontouchend="StopMove()"  onmousedown="MoveChampToRight()" ontouchstar="MoveChampToRight()">➡</button>
                     </div>
                 </section>
             </section>
