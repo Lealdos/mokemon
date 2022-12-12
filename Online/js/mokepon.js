@@ -335,7 +335,7 @@ function ResetEnemyOnlineAttacks(){
         headers:{ "content-type": "application/json", 
         },
         body: JSON.stringify({
-            Attacks: PlayerAttacks = []
+            Attacks: PlayerAttacks 
         })
     })
     console.log("despues ", enemyAttack)
