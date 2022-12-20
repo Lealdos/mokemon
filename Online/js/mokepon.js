@@ -284,7 +284,7 @@ function enemyChampSelect(MyEnemy) {
     spanEnemyChamp.innerHTML = MyEnemy.name
     enemyChampAttack = MyEnemy.attacks
     attacks_pack()
-  }
+}
 
 function enemySelectAttack(){
     
@@ -331,7 +331,7 @@ function getOnlineAttacks(){
 
 function ResetEnemyOnlineAttacks(){
     fetch(`http://192.168.1.249:8085/mokepon/${enemyId}/attacks`,{    
-        method: "put" ,
+        method: "put",
         headers:{ "content-type": "application/json", 
         },
         body: JSON.stringify({
@@ -340,7 +340,28 @@ function ResetEnemyOnlineAttacks(){
     })
     console.log("despues ", enemyAttack)
 }
-            
+
+function ResetPlayerOnlineAttacks(){
+    fetch(`http://192.168.1.249:8085/mokepon/${playerId}/attacks`,{    
+        method: "put",
+        headers:{ "content-type": "application/json", 
+        },
+        body: JSON.stringify({
+            Attacks: PlayerAttacks 
+        })
+    })
+}
+     
+function OutOfServer(){
+    fetch(`http://192.168.1.249:8085/mokepon/${enemyId}/delete`,{
+        method: "delete",
+        headers: { "content-type": "application/json", 
+        },
+        body: JSON.stringify({    
+        })
+    })
+    console.log("enemigo eliminado")
+}
 
 function starBattle (){
     if (PlayerAttacks.length === 5) {
@@ -437,24 +458,50 @@ function checklives(){
             combatDecision = "is a tie😅"
             sectionMessage.innerHTML = combatDecision
     }
-    if (currentEnemyLives <= 0 && currentPlayerLives > 0){
-        if (currentEnemyLives<0){
-            currentEnemyLives =0
-        }
-        endBattle("You won the battle🥳")
-    }
-    else if (currentPlayerLives <= 0 && currentEnemyLives > 0){
+    
+    if (currentPlayerLives <= 0 && currentEnemyLives > 0){
         if (currentPlayerLives<=0){
             currentPlayerLives = 0
+            spanPlayerlives.innerHTML = "lives " + currentPlayerLives
+        } 
+        endBattle("You lost the battle ☠💀")
+    }
+    else if (currentEnemyLives <= 0 && currentPlayerLives > 0){
+        if (currentEnemyLives<0){
+            currentEnemyLives = 0
+            spanEnemylives.innerHTML = "lives " + currentEnemyLives
         }
-            endBattle("You lost the battle ☠💀")
+        ResetEnemyOnlineAttacks()
+        endBattle("You won the battle🥳")
+        setTimeout(OutOfServer, 550)
+        setTimeout(resetOnlineBattle, 5000);   
     }
     else if (currentEnemyLives <=0 && currentPlayerLives <=0){
-            endBattle("The battle was a draw 😒")
-            currentPlayerLives = 0
-            currentEnemyLives = 0
+        currentPlayerLives = 0
+        currentEnemyLives = 0
+        spanEnemylives.innerHTML = "lives " + currentEnemyLives
+        spanPlayerlives.innerHTML = "lives " + currentPlayerLives
+        endBattle("The battle was a draw 😒")
     }
     
+}
+
+function resetOnlineBattle(){
+    PlayerAttacks = []
+    enemyAttack = []
+    ResetPlayerOnlineAttacks()
+    selectAttackSection.style.display = 'none'
+    SectionShowMap.style.display = 'flex'
+    newPlayerAttack.innerHTML = ""
+    newEnemyAttack.innerHTML = ""
+    ChooseEnemyContainer.innerHTML = ""
+    sectionMessage.innerHTML = "Good Luck"
+    currentEnemyLives = 5
+    currentPlayerLives = 5
+    spanPlayerlives.innerHTML = "lives " + currentPlayerLives
+    spanEnemylives.innerHTML = "lives " + currentEnemyLives
+    sectionReset.style.display = 'none'
+    collisionhappen = false
 }
 
 function paintCanvas(){
@@ -642,7 +689,6 @@ function CheckColission(Enemy){
         enemyChampSelect(Enemy)
         selectAttackSection.style.display = 'flex'
         SectionShowMap.style.display = 'none' 
-    //alert("chocaste con "+ Enemy.name)
 }
 
 function JoinToTheGame(){

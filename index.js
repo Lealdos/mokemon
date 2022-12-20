@@ -39,6 +39,7 @@ app.get("/join", (req,res)=>{
     res.send(id)
 } )
 
+
 app.post("/mokepon/:playerId", (req,res)=>{
     const playerId = req.params.playerId || ""
     const name = req.body.Champion || ""
@@ -47,8 +48,13 @@ app.post("/mokepon/:playerId", (req,res)=>{
     if (playerIndex >= 0){
         players[playerIndex].assignchampion(pet)
     }
-     console.log(players)
-     console.log(playerId)
+    if (players.length >=2){
+
+        
+        console.log("comienzo ",players)
+
+    }
+    //  console.log(playerId)
     res.end()
 })
 
@@ -94,6 +100,14 @@ app.put("/mokepon/:playerId/attacks", (req,res)=>{
     })
 })
 
+app.delete("/mokepon/:playerId/delete",(req,res)=>{
+    const playerId = req.params.playerId || ""
+    const playerIndex= players.findIndex((player)=> playerId === player.id)
+    if (playerIndex >= 0){
+        players.splice(playerIndex,1)
+    }
+    console.log("Final ",players)
+})
 
 app.listen(8085,()=>{
     console.log("Running Server")
