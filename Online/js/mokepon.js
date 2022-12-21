@@ -356,9 +356,7 @@ function OutOfServer(){
     fetch(`http://192.168.1.249:8085/mokepon/${enemyId}/delete`,{
         method: "delete",
         headers: { "content-type": "application/json", 
-        },
-        body: JSON.stringify({    
-        })
+        }
     })
     console.log("enemigo eliminado")
 }
