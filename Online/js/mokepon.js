@@ -53,7 +53,10 @@ const SectionShowMap = document.getElementById('Show_Map')
 const Maps = document.getElementById('Maps')
 let board = Maps.getContext('2d')
 
-
+//Server Address
+const callToServer= 'http://192.168.1.249:8085'
+const JointotheServer = callToServer+'/join' 
+ 
 
 // Size of the maps in canvas
 // Maps.height = 350
@@ -300,7 +303,7 @@ function enemySelectAttack(){
 }
 
 function sendOnlineAttacks(){
-    fetch(`http://192.168.1.249:8085/mokepon/${playerId}/Attacks`,{ 
+    fetch(`${callToServer}/mokepon/${playerId}/Attacks`,{ 
         method: "post" ,
         headers:{ "content-type": "application/json", 
         },
@@ -312,7 +315,7 @@ function sendOnlineAttacks(){
 }
 
 function getOnlineAttacks(){
-    fetch(`http://192.168.1.249:8085/mokepon/${enemyId}/attacks`)
+    fetch(`${callToServer}/mokepon/${enemyId}/attacks`)
         .then(function (res) {
             if (res.ok) {
                 res.json()
@@ -330,7 +333,7 @@ function getOnlineAttacks(){
 }
 
 function ResetEnemyOnlineAttacks(){
-    fetch(`http://192.168.1.249:8085/mokepon/${enemyId}/attacks`,{    
+    fetch(`${callToServer}/mokepon/${enemyId}/attacks`,{    
         method: "put",
         headers:{ "content-type": "application/json", 
         },
@@ -342,7 +345,7 @@ function ResetEnemyOnlineAttacks(){
 }
 
 function ResetPlayerOnlineAttacks(){
-    fetch(`http://192.168.1.249:8085/mokepon/${playerId}/attacks`,{    
+    fetch(`${callToServer}/mokepon/${playerId}/attacks`,{    
         method: "put",
         headers:{ "content-type": "application/json", 
         },
@@ -353,7 +356,7 @@ function ResetPlayerOnlineAttacks(){
 }
      
 function OutOfServer(){
-    fetch(`http://192.168.1.249:8085/mokepon/${enemyId}/delete`,{
+    fetch(`${callToServer}/mokepon/${enemyId}/delete`,{
         method: "delete",
         headers: { "content-type": "application/json", 
         }
@@ -542,7 +545,7 @@ function paintCanvas(){
 }
 
 function sendPosition(positionX,positionY){
-    fetch(`http://192.168.1.249:8085/mokepon/${playerId}/position`,{
+    fetch(`${callToServer}/mokepon/${playerId}/position`,{
             method: "post",
             headers: { "content-type": "application/json"
             },
@@ -690,7 +693,7 @@ function CheckColission(Enemy){
 }
 
 function JoinToTheGame(){
-    fetch("http://192.168.1.249:8085/join")
+    fetch(`${JointotheServer}`)
         .then(function(res){
             if (res.ok) {
                 res.text()
@@ -702,7 +705,7 @@ function JoinToTheGame(){
 }
 
 function MokemonSelect(playerselect){
-    fetch(`http://192.168.1.249:8085/mokepon/${playerId}`,{
+    fetch(`${callToServer}/mokepon/${playerId}`,{
         method: "post",
         headers: { "content-type": "application/json"
         },
