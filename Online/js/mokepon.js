@@ -214,8 +214,9 @@ function starGame(){
 
 
     buttonReset.addEventListener('click',restarGame)
-
-    JoinToTheGame()
+    if (multiplayer === true){
+        JoinToTheGame()
+    }
 }
 
 function RamdomChoise(min, max) {
@@ -247,8 +248,9 @@ function playerChampSelect(event){
     else {
         alert('Please select a champ')
         } 
-    
-    MokemonSelect(Champions[indexChampionPlayer].name)
+    if (multiplayer === true){
+        MokemonSelect(Champions[indexChampionPlayer].name)
+    }
 }
 
 function extractAttacks (){
