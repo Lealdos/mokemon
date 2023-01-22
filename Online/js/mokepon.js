@@ -1,3 +1,4 @@
+let multiplayer = true
 let Champions = []
 let PlayerAttacks = []
 let enemyChampAttack = []
@@ -36,7 +37,9 @@ const keys = {
     RIGHT : 39
 
 };
-
+const pvp_buttom = document.getElementById('pvp_buttom')
+const pve_buttom = document.getElementById('pve_buttom')
+const game_mode = document.getElementById('game_mode')
 const button_Right = document.getElementById('button_Right')
 const button_Up = document.getElementById('button_Up')
 const button_Left = document.getElementById('button_Left')
@@ -54,8 +57,8 @@ const Maps = document.getElementById('Maps')
 let board = Maps.getContext('2d')
 
 //Server Address
-const callToServer= 'http://192.168.1.249:8085'
-const JointotheServer = callToServer+'/join' 
+const callToServer= 'http://192.168.1.251:8085'
+const JointotheServer = callToServer +'/join' 
  
 
 // Size of the maps in canvas
@@ -128,6 +131,11 @@ let Chiguirazo = new Champion("Chiguirazo",'./assets/Chiguirazo.png',5,'./assets
 let Ratachingona = new Champion("Ratachingona",'./assets/Ratachingona.png',5,'./assets/Ratachingonamap.png')
 let Serpentina = new Champion("Serpentina",'./assets/Serpentina.png',5,'./assets/Serpentina.png')
 
+let SerpentinaE = new Champion("Serpentina",'./assets/morado.png',5,'./assets/morado.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
+let RatachingonaE = new Champion("Ratachingona",'./assets/langostelvis.png',5,'./assets/langostelvis.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
+let ChiguirazoE = new Champion("Chiguirazo",'./assets/verdesito.png',5,'./assets/verdesito.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
+let HipodogeE = new Champion("Hipodoge",'./assets/tucapalma.png',5,'./assets/tucapalma.png',x = RamdomChoise(60,140), y = RamdomChoise(180,Maps.height-50))
+
 
 const HipodogeAttacks =[
     {name:'💧 Hidrojet', id:'water_button', element: 'water'},
@@ -137,7 +145,7 @@ const HipodogeAttacks =[
     {name:'🌱 Rock Smash', id:'grass_button' , element: 'fire'}, 
 ]
 Hipodoge.attacks.push(... HipodogeAttacks)
-//HipodogeE.attacks.push(... HipodogeAttacks)
+HipodogeE.attacks.push(... HipodogeAttacks)
 
 const ChiguirazoAttacks = [    
     {name:'🌱 Earthquake', id:'grass_button' , element: 'grass'},
@@ -147,7 +155,7 @@ const ChiguirazoAttacks = [
     {name:'🔥 Fireball', id:'fire_button',element: 'fire'},
 ]
 Chiguirazo.attacks.push(...ChiguirazoAttacks)
-//ChiguirazoE.attacks.push(...ChiguirazoAttacks)
+ChiguirazoE.attacks.push(...ChiguirazoAttacks)
 
 const RatachingonaAttacks = [    
     {name:'🔥 Fire Bite', id:'fire_button', element: 'fire'},
@@ -157,7 +165,7 @@ const RatachingonaAttacks = [
     {name:'🌱 Dig', id:'grass_button', element: 'grass'},
 ]
 Ratachingona.attacks.push(...RatachingonaAttacks)
-//RatachingonaE.attacks.push(...RatachingonaAttacks)
+RatachingonaE.attacks.push(...RatachingonaAttacks)
 
 const SerpentinaAttacks = [
     {name:'🌱 Dig', id:'grass_button', element: 'grass'},
@@ -167,17 +175,30 @@ const SerpentinaAttacks = [
     {name:'🌱 Earth Power', id:'grass_button', element: 'grass'} 
 ]
 Serpentina.attacks.push(...SerpentinaAttacks)
-
-//SerpentinaE.attacks.push(...SerpentinaAttacks)
+SerpentinaE.attacks.push(...SerpentinaAttacks)
 
 Champions.push(Hipodoge,Chiguirazo,Ratachingona,Serpentina)
+
+function GameModeChoise(){
+    selectChampSection.style.display = 'none'
+    sectionSelectAttack.style.display = 'none'
+    SectionShowMap.style.display = 'none'
+    pve_button.addEventListener('click',pvemode)
+    pvp_button.addEventListener('click',starGame)
+
+}
+
+function pvemode(){
+    game_mode.remove()
+    multiplayer = false
+    starGame()
+}
 
 function starGame(){
     /* get the ID of all the HTML element need it and hide the ones that
      no need it at star of the game*/
-   
-    sectionSelectAttack.style.display = 'none'
-    SectionShowMap.style.display = 'none'
+     game_mode.remove()
+    selectChampSection.style.display = 'flex'
     Champions.forEach((Champion) => {
         championOption = `<input type="radio" name="pets"  id=${Champion.name} value=${Champion.name} />
         <label class="champion_Cards" for=${Champion.name}>
@@ -255,20 +276,23 @@ function displayChampsAtacck(champAtaccks){
 function attacks_pack(){
     AttacksButtons.forEach((button)=>{
         button.addEventListener('click',(event)=>{
-            //console.log(event.target.textContent.slice(0,2))
+            //console.log(event.target.textContent.slice(0,2)) to check the emoticon
             if (event.target.textContent.slice(0,2) ==='🔥' ){
                 PlayerAttacks.push('Element: Fire!  🔥')
                 button.style.background = '#112f59'
                 button.disabled = true
+                PVESelectAttack()
                 
             } else if(event.target.textContent.slice(0,2) ==='💧'){
                 PlayerAttacks.push('Element: Water💧')
                 button.style.background = '#112f56'
                 button.disabled = true
+                PVESelectAttack()
             } else {
                 PlayerAttacks.push('Element: Grass🌱')
                 button.style.background = '#112f59'
                 button.disabled = true
+                PVESelectAttack()
             }
             starBattle ()
         })
@@ -289,17 +313,18 @@ function enemyChampSelect(MyEnemy) {
     attacks_pack()
 }
 
-function enemySelectAttack(){
-    
-    let attack = RamdomChoise(0,enemyChampAttack.length-1)
-    if (attack === 0 || attack === 1 ){
-        enemyAttack.push("Element: Fire!  🔥")
-    } else if(attack === 2 || attack === 3){
-        enemyAttack.push("Element: Water💧")
-    }else {
-        enemyAttack.push("Element: Grass🌱")
+function PVESelectAttack(){
+    if (multiplayer=== false){
+        let attack = RamdomChoise(0,enemyChampAttack.length-1)
+        if (attack === 0 || attack === 1 ){
+            enemyAttack.push("Element: Fire!  🔥")
+        } else if(attack === 2 || attack === 3){
+            enemyAttack.push("Element: Water💧")
+        }else {
+            enemyAttack.push("Element: Grass🌱")
+        }
+        console.log(enemyAttack)
     }
-    console.log(enemyAttack)
 }
 
 function sendOnlineAttacks(){
@@ -365,8 +390,11 @@ function OutOfServer(){
 }
 
 function starBattle (){
-    if (PlayerAttacks.length === 5) {
+    if (PlayerAttacks.length === 5 && multiplayer === true) {
         sendOnlineAttacks()
+    }
+    if (PlayerAttacks.length === 5 && multiplayer === false) {
+        mokemonBattle() 
     }
 }
 
@@ -472,10 +500,12 @@ function checklives(){
             currentEnemyLives = 0
             spanEnemylives.innerHTML = "lives " + currentEnemyLives
         }
-        ResetEnemyOnlineAttacks()
         endBattle("You won the battle🥳")
-        setTimeout(OutOfServer, 550)
-        setTimeout(resetOnlineBattle, 5000);   
+        if (multiplayer === true){
+            ResetEnemyOnlineAttacks()
+            setTimeout(OutOfServer, 550)
+            setTimeout(resetOnlineBattle, 5000);   
+        }
     }
     else if (currentEnemyLives <=0 && currentPlayerLives <=0){
         currentPlayerLives = 0
@@ -490,7 +520,9 @@ function checklives(){
 function resetOnlineBattle(){
     PlayerAttacks = []
     enemyAttack = []
-    ResetPlayerOnlineAttacks()
+    if (multiplayer===true){
+        ResetPlayerOnlineAttacks()
+    }
     selectAttackSection.style.display = 'none'
     SectionShowMap.style.display = 'flex'
     newPlayerAttack.innerHTML = ""
@@ -516,14 +548,16 @@ function paintCanvas(){
         Maps.width,
         Maps.height
     )
-
-    Champions[indexChampionPlayer].paintChampion()  
-    sendPosition(Champions[indexChampionPlayer].x, Champions[indexChampionPlayer].y)
+    
+    Champions[indexChampionPlayer].paintChampion()
+    if (multiplayer === true){ 
+        sendPosition(Champions[indexChampionPlayer].x, Champions[indexChampionPlayer].y)
+    }
     
     ChampionsEnemy.forEach(function(mokepon){
         if(mokepon != undefined){
             mokepon.paintChampion()
-            if ((Champions[indexChampionPlayer].speedX !== 0 || Champions[indexChampionPlayer].speedY !== 0) && collisionhappen=== false ) {
+            if ((Champions[indexChampionPlayer].speedX !== 0 || Champions[indexChampionPlayer].speedY !== 0) && collisionhappen === false ) {
             CheckColission(mokepon)  
         }
         if (collisionhappen === false ){
@@ -531,16 +565,18 @@ function paintCanvas(){
         }
         }
     })
-    // SerpentinaE.paintChampion()
-    // RatachingonaE.paintChampion()
-    // HipodogeE.paintChampion()
-    // ChiguirazoE.paintChampion()
-    // if (Champions[indexChampionPlayer].speedX !== 0 || Champions[indexChampionPlayer].speedY !== 0) {
-    //     // CheckColission(SerpentinaE)
-    //     // CheckColission(RatachingonaE)
-    //     // CheckColission(ChiguirazoE)
-    //     // CheckColission(HipodogeE)
-    // }
+    if (multiplayer === false){ 
+        SerpentinaE.paintChampion()
+        RatachingonaE.paintChampion()
+        HipodogeE.paintChampion()
+        ChiguirazoE.paintChampion()
+        if (Champions[indexChampionPlayer].speedX !== 0 || Champions[indexChampionPlayer].speedY !== 0) {
+                CheckColission(SerpentinaE)
+                CheckColission(RatachingonaE)
+                CheckColission(ChiguirazoE)
+                CheckColission(HipodogeE)
+        }
+        }
   
 }
 
@@ -565,7 +601,7 @@ function sendPosition(positionX,positionY){
                         if(enemy.pet != undefined){
                             const championName = enemy.pet.name || ""
                             if (championName === 'Serpentina'){ 
-                                onlineEnemy = new Champion("Serpentina",'./assets/morado.png',5,'./assets/Serpentina.png',enemy.id)
+                                onlineEnemy = new Champion("Serpentina",'./assets/Serpentina.png',5,'./assets/Serpentina.png',enemy.id)
                                 onlineEnemy.attacks.push(...SerpentinaAttacks)
                             }
                             else if (championName === 'Ratachingona'){
@@ -594,7 +630,7 @@ function sendPosition(positionX,positionY){
 
 function starmap(){
     paintCanvas()
-    interval = setInterval(paintCanvas, 250)
+    interval = setInterval(paintCanvas, 150)
     window.addEventListener("keydown", checkSteps);
     window.addEventListener("keyup", StopMove);
     button_Left.addEventListener("touchstart", MoveChampToLeft);
@@ -715,4 +751,4 @@ function MokemonSelect(playerselect){
     })
 }
 
-window.addEventListener('load', starGame)
+window.addEventListener('load', GameModeChoise)

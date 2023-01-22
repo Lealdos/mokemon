@@ -17,14 +17,6 @@ body{
     background-repeat:repeat-y;
 }
 
-#select_champ form {
-    height: 90vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    
-}
 
 .tittle {
     display:flex ;
@@ -59,6 +51,40 @@ input:checked + label {
     box-shadow: 1px1px10px ;
 }
 
+#select_champ{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#select_champ form {
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#game_mode {
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+.game_mode_buttons {
+    width: 100px;
+    height: 30px;
+    color:black;
+    background:#F9D923;
+    border: 1.8px solid #1683ae;
+    border-radius: 8px;
+    align-items: center;
+    font-family: 'Acme', sans-serif;
+    font-size: 15px;
+}
 #champ_selectButton:hover,.attack_button:hover{
     background-color: #de8f34;
 }
@@ -227,7 +253,10 @@ input:checked + label {
 
 @media (max-width:720px){
     .tittle{
-        font-size: 56px;
+        font-size: 36px;
+    }
+    .subtittle{
+        font-size: 26px;
     }
     .cards_set,#attack_set{
         flex-direction: column;

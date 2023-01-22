@@ -37,6 +37,7 @@ app.get("/join", (req,res)=>{
     players.push(player)
     res.setHeader('Access-Control-Allow-Origin', "*")
     res.send(id)
+    console.log(players)
 } )
 
 
