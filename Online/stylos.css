@@ -74,6 +74,15 @@ input:checked + label {
     align-items: center;
     
 }
+#game_mode h2 {
+    font-size: 68px;
+    margin-bottom: 3px;
+}
+#game_mode h3 {
+    font-size: 32px;
+    margin-bottom: 6px;
+    margin-top: 2px;
+}
 .game_mode_buttons {
     width: 100px;
     height: 30px;
