@@ -129,7 +129,7 @@ class Champion{
 let Hipodoge = new Champion("Hipodoge",'./assets/Hipodoge.png',5,'./assets/Hipodogemap.png')
 let Chiguirazo = new Champion("Chiguirazo",'./assets/Chiguirazo.png',5,'./assets/Chiguirazomap.png')
 let Ratachingona = new Champion("Ratachingona",'./assets/Ratachingona.png',5,'./assets/Ratachingonamap.png')
-let Serpentina = new Champion("Serpentina",'../assets/Serpentina.png',5,'./assets/Serpentina.png')
+let Serpentina = new Champion("Serpentina",'./assets/Serpentina.png',5,'./assets/Serpentina.png')
 
 let SerpentinaE = new Champion("Serpentina",'./assets/morado.png',5,'./assets/morado.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
 let RatachingonaE = new Champion("Ratachingona",'./assets/langostelvis.png',5,'./assets/langostelvis.png',x = RamdomChoise(50,450), y = RamdomChoise(50,Maps.height-50))
