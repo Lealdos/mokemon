@@ -6,6 +6,7 @@ app.use(express.static('Online'))
 app.use(cors())
 app.use(express.json())
 
+var port = process.env.PORT || 3000;
 const players = []
 class Player {
     constructor(id){
@@ -110,7 +111,7 @@ app.delete("/mokepon/:playerId/delete",(req,res)=>{
     console.log("Final ",players)
 })
 
-app.listen(8085,()=>{
+app.listen(port,()=>{
     console.log("Running Server")
 })
 

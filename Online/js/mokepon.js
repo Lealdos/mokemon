@@ -1,3 +1,5 @@
+
+
 let multiplayer = true
 let Champions = []
 let PlayerAttacks = []
@@ -57,7 +59,7 @@ const Maps = document.getElementById('Maps')
 let board = Maps.getContext('2d')
 
 //Server Address
-const callToServer= 'http://192.168.1.251:8085' //this have to be your IPV4 address and the last 4 digit the port of the server (node.js file)
+const callToServer= 'http://192.168.1.251:3000' //this have to be your IPV4 address and the last 4 digit the port of the server (node.js file)
 const JointotheServer = callToServer +'/join' 
  
 
